@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "RenderObject.h"
 #include "DefaultGeometry/Cube.h"
+#include "MyShape.h"
+#include <chrono>
 
 class RENDERENGINE_API CRenderEngine
 {
@@ -21,4 +23,7 @@ private:
 	long m_Width = 800;
 	long m_Height = 600;
 	Cube* m_defaultCube;
+	MyShape* m_myShape;
+	std::chrono::steady_clock::time_point timePoint;
+	float elapsedTime;
 };

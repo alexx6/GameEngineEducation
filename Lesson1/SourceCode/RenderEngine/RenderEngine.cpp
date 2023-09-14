@@ -30,10 +30,13 @@ CRenderEngine::CRenderEngine(HINSTANCE hInstance)
 	if (!bgfx::init(bgfxInit))
 		assert(0);
 
-	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0f, 0);
+	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffaa88bb, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, bgfx::BackbufferRatio::Equal);
 
 	m_defaultCube = new Cube();
+	m_myShape = new MyShape();
+	timePoint = std::chrono::high_resolution_clock::now();
+	elapsedTime = 0.0f;
 }
 
 CRenderEngine::~CRenderEngine()
@@ -101,10 +104,26 @@ void CRenderEngine::Update()
 	bx::mtxProj(proj, 60.0f, float(m_Width) / float(m_Height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
 	bgfx::setViewTransform(0, view, proj);
 
-	bgfx::setVertexBuffer(0, m_defaultCube->GetVertexBuffer());
-	bgfx::setIndexBuffer(m_defaultCube->GetIndexBuffer());
 
-	bgfx::submit(0, m_defaultCube->GetProgramHandle());
+	std::chrono::steady_clock::time_point curTime = std::chrono::high_resolution_clock::now();
+
+	float tm[16];
+	bx::mtxTranslate(tm, 0.0f, 5.0f * bx::sin(elapsedTime), 0.0f);
+
+	float rm[16];
+	bx::mtxRotateXY(rm, 1.0f * elapsedTime, bx::cos(elapsedTime));
+
+	
+	float resm[16];
+	bx::mtxMul(resm, tm, rm);
+
+	elapsedTime += std::chrono::duration_cast<std::chrono::milliseconds>(curTime - timePoint).count() / 1000.0f;
+	timePoint = curTime;
+	bgfx::setVertexBuffer(0, m_myShape->GetVertexBuffer());
+	bgfx::setIndexBuffer(m_myShape->GetIndexBuffer());
+	bgfx::setTransform(resm);
+
+	bgfx::submit(0, m_myShape->GetProgramHandle());
 
 	bgfx::touch(0);
 
