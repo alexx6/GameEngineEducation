@@ -12,7 +12,10 @@
 #include "CubeGameObject.h"
 #include "GameTimer.h"
 #include "InputHandler.h"
-
+#include "UpdatableVector.h"
+#include "ControllableCube.h"
+#include "JumpingCube.h"
+#include "MovingCube.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -29,9 +32,36 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     RenderEngine* renderEngine = new RenderEngine(hInstance);
     RenderThread* renderThread = renderEngine->GetRT();
     InputHandler* inputHandler = new InputHandler();
+    UpdatableVector uvec = UpdatableVector();
+    srand(time(0));
 
-    GameObject* cube = new CubeGameObject();
-    renderThread->EnqueueCommand(RC_CreateCubeRenderObject, cube->GetRenderProxy());
+    for (int i = 0; i < 10; ++i)
+    {
+        for (int j = 0; j < 10; ++j)
+        {
+            GameObject* cube;
+            switch (rand() % 3)
+            {
+            case 0:
+                cube = new JumpingCube(-20.0f);
+                break;
+            case 1:
+                cube = new ControllableCube(inputHandler);
+                break;
+            case 2:
+                cube = new MovingCube();
+                break;
+
+            default:
+                cube = new CubeGameObject();
+                break;
+            }
+
+            cube->SetPosition(-15.0f + 3.0f * i, -20.0f, 3.0f * j);
+            renderThread->EnqueueCommand(RC_CreateCubeRenderObject, cube->GetRenderProxy());
+            uvec.push_back(cube);
+        }
+    }
 
     MSG msg = { 0 };
 
@@ -51,18 +81,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
         {
             inputHandler->Update();
-
-            float t = 0;
             timer.Tick();
-            t = sin(timer.TotalTime())*2;
 
-            float velocity = 0.0f;
-            if (inputHandler->GetInputState().test(eIC_GoLeft))
-                velocity -= 1.0f;
-            if (inputHandler->GetInputState().test(eIC_GoRight))
-                velocity += 1.0f;
-            newPositionX += velocity * timer.DeltaTime();
-            cube->SetPosition(newPositionX, 0.0f, 0.0f);
+            uvec.update(timer.DeltaTime());
 
             renderThread->OnEndFrame();
         }

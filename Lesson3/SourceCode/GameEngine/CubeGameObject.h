@@ -2,12 +2,10 @@
 
 #include "GameObject.h"
 
-class CubeGameObject final : public GameObject
+class CubeGameObject : public GameObject
 {
 public:
 	CubeGameObject();
-
-private:
-	
+	virtual void update(float deltaTime) override {};
 };
 

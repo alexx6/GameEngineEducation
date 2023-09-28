@@ -13,7 +13,8 @@ public:
 		delete m_pRenderProxy;
 	}
 
-	void SetPosition(float x, float y, float z);
+	virtual void SetPosition(float x, float y, float z);
+	virtual void update(float deltaTime) {};
 
 	RenderProxy* const GetRenderProxy() { return m_pRenderProxy; }
 protected:
