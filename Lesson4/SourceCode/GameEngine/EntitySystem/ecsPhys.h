@@ -36,6 +36,12 @@ struct FrictionAmount
   float val;
 };
 
+struct DetectCollisions {};
+
+struct Collectible { int points; };
+
+struct CanCollect {};
+
 typedef float Speed;
 
 void register_ecs_phys_systems(flecs::world &ecs);

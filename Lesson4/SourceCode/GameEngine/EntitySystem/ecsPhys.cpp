@@ -1,5 +1,8 @@
 #include "ecsPhys.h"
+#include "ecsControl.h"
+#include "ecsMesh.h"
 #include <stdlib.h>
+#include <math.h>
 
 static float rand_flt(float from, float to)
 {
@@ -8,6 +11,8 @@ static float rand_flt(float from, float to)
 
 void register_ecs_phys_systems(flecs::world &ecs)
 {
+    static auto canCollectQuery = ecs.query<CanCollect, Position>();
+
   ecs.system<Velocity, const Gravity, BouncePlane*, Position*>()
     .each([&](flecs::entity e, Velocity &vel, const Gravity &grav, BouncePlane *plane, Position *pos)
     {
@@ -65,6 +70,54 @@ void register_ecs_phys_systems(flecs::world &ecs)
       pos.x += rand_flt(-shiver.val, shiver.val);
       pos.y += rand_flt(-shiver.val, shiver.val);
       pos.z += rand_flt(-shiver.val, shiver.val);
+    });
+
+  ecs.system < const BouncePlane, Position, TimeToLive, const DetectCollisions >()
+      .each([&](flecs::entity e, const BouncePlane& plane, Position& pos, TimeToLive& timeToLive, const DetectCollisions&)
+    {
+        float dotPos = plane.x * pos.x + plane.y * pos.y + plane.z * pos.z;
+        if (dotPos < plane.w)
+        {
+            timeToLive.enabled = true;
+        }
+    });
+    
+  ecs.system<TimeToLive, RenderProxyPtr>()
+    .each([&](flecs::entity e, TimeToLive& timeToLive, RenderProxyPtr& proxy)
+    {
+        if (timeToLive.left <= 0.0f)
+        {
+            delete proxy.ptr;
+            e.destruct();
+            return;
+        }
+
+        if (timeToLive.enabled)
+            timeToLive.left -= e.delta_time();
+    });
+
+  static auto cubeSpawnerQuery = ecs.query <CubeSpawner, ReloadSettings>();
+
+  ecs.system<Position, Collectible, RenderProxyPtr>()
+    .each([&](flecs::entity e_c, Position& position_c, Collectible& collectible, RenderProxyPtr& proxy)
+    {
+        canCollectQuery.each([&](flecs::entity e, CanCollect&, Position& position)
+        {
+            if (fabsf(position_c.x - position.x) < 1.0f
+                && fabsf(position_c.y - position.y) < 1.0f
+                && fabsf(position_c.z - position.z) < 1.0f)
+            {
+                delete proxy.ptr;
+                e_c.destruct();
+
+                cubeSpawnerQuery.each([&](flecs::entity e_s, CubeSpawner&, ReloadSettings& reload)
+                {
+                        reload.shotsLeft += collectible.points;
+                        if (reload.shotsLeft > reload.shots)
+                            reload.shotsLeft = reload.shots;
+                });
+            }
+        });
     });
 }
 
