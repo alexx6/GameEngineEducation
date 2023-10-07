@@ -21,9 +21,14 @@ EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandle
         .add<CubeSpawner>()
         .add<HasCooldown>();
 
-    auto collectible = ecs.entity()
-        .set(Position{ 0.f, -5.f, 20.f })
+    auto collectible1 = ecs.entity()
+        .set(Position{ 10.f, -5.f, 20.f })
         .set(Collectible{ 3 })
+        .add<CubeMesh>();
+
+    auto collectible2 = ecs.entity()
+        .set(Position{ -10.f, -5.f, 20.f })
+        .set(Collectible{ 0 })
         .add<CubeMesh>();
 }
 
