@@ -7,19 +7,6 @@
 void register_ecs_control_systems(flecs::world &ecs)
 {
   static auto inputQuery = ecs.query<InputHandlerPtr>();
-  ecs.system<Velocity, const Speed, const Controllable>()
-    .each([&](flecs::entity e, Velocity &vel, const Speed &spd, const Controllable &)
-    {
-      inputQuery.each([&](InputHandlerPtr input)
-      {
-        float deltaVel = 0.f;
-        if (input.ptr->GetInputState().test(eIC_GoLeft))
-          deltaVel -= spd;
-        if (input.ptr->GetInputState().test(eIC_GoRight))
-          deltaVel += spd;
-        vel.x += deltaVel * e.delta_time();
-      });
-    });
 
   ecs.system<const Position, Velocity, const Controllable, const BouncePlane, const JumpSpeed>()
     .each([&](const Position &pos, Velocity &vel, const Controllable &, const BouncePlane &plane, const JumpSpeed &jump)
