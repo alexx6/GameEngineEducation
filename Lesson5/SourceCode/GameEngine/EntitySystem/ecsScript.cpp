@@ -15,17 +15,8 @@ void register_ecs_script_system(flecs::world& ecs)
         {
             inputQuery.each([&](InputHandlerPtr input)
                 {
-                    spp.ptr->getSystem()->controlScript(vel.x, input.ptr, e.delta_time());
-
-                    if (0)
-                    {
-                        float deltaVel = 0.f;
-                        if (input.ptr->GetInputState().test(eIC_GoLeft))
-                            deltaVel -= spd;
-                        if (input.ptr->GetInputState().test(eIC_GoRight))
-                            deltaVel += spd;
-                        vel.x += deltaVel * e.delta_time();
-                    }
+                    spp.ptr->getSystem()->controlScript(vel.x, e.delta_time(), 
+                    input.ptr->GetInputState().test(eIC_GoLeft), input.ptr->GetInputState().test(eIC_GoRight));
                 });
         });
 }
