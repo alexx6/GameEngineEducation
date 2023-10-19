@@ -4,27 +4,18 @@
 
 CScriptSystem::CScriptSystem()
 {
+    script = lua.load_file("controlScript.lua");
     return;
 }
 
-void CScriptSystem::initControlScript()
-{  
-    std::ifstream f("controlScript.lua");
-    if (!f)
-        return;
-    std::stringstream ss;
-    ss << f.rdbuf();
-    script = ss.str();
-}
-
-
-void CScriptSystem::controlScript(float& vel, InputHandler* ptr, const float dt)
+void CScriptSystem::controlScript(float& vel, const float dt, bool testLeft, bool testRight)
 {
-    sol::state lua1;
-    lua1.open_libraries();
-    lua1["dt"] = dt;
-    lua1["testLeft"] = ptr->GetInputState().test(eIC_GoLeft);
-    lua1["testRight"] = ptr->GetInputState().test(eIC_GoRight);
-    float dd = lua1.script(script);
+    lua["dt"] = dt;
+
+    //i know this looks terrible but i kept getting linking errors because of
+    //getInputState in inputHandler and lost all hope after hours of trying
+    lua["testLeft"] = testLeft;
+    lua["testRight"] = testRight;
+    float dd = script();
     vel += dd;
 }

@@ -8,6 +8,7 @@
 class SCRIPTSYSTEM_API CScriptProxy final : public IScriptProxy
 {
 public:
+	CScriptProxy();
 	CScriptSystem* getSystem();
 	
 private:
