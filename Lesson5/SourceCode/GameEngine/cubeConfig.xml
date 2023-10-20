@@ -1,0 +1,25 @@
+<entityParams>
+    <gravity>
+        <x>0.0</x>
+        <y>-9.8065</y>
+        <z>0.0</z>
+    </gravity>
+    <position>
+        <x>-2.0</x>
+        <y>4.0</y>
+        <z>0.0</z>
+    </position>
+    <velocity>
+        <x>0.0</x>
+        <y>3.0</y>
+        <z>0.0</z>
+    </velocity>
+    <bouncePlane>
+        <x>0.0</x>
+        <y>1.0</y>
+        <z>0.0</z>
+        <w>3.0</w>
+    </bouncePlane>
+    <bounciness>1.0</bounciness>
+    <cubeMesh/>
+</entityParams>

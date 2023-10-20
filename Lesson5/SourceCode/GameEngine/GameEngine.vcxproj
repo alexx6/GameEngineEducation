@@ -78,7 +78,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\..\SDKs\bgfx\bimg\include\;$(SolutionDir)..\..\SDKs\bgfx\bx\include\;$(SolutionDir)..\..\SDKs\bgfx\bgfx\include\;$(SolutionDir)..\..\SDKs\sol2\sol2\include\;$(SolutionDir)..\..\SDKs\lua\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\SDKs\bgfx\bimg\include\;$(SolutionDir)..\..\SDKs\bgfx\bx\include\;$(SolutionDir)..\..\SDKs\bgfx\bgfx\include\;$(SolutionDir)..\..\SDKs\sol2\sol2\include\;$(SolutionDir)..\..\SDKs\lua\src;$(SolutionDir)..\..\SDKs\tinyxml2;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</OutDir>
@@ -137,15 +137,15 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\SDKs\flecs\src;$(SolutionDir)..\..\SDKs\inih\include;$(SolutionDir)\ScriptSystem;$(SolutionDir)\RenderEngine\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\SDKs\flecs\src;$(SolutionDir)..\..\SDKs\inih\include;$(SolutionDir)..\..\SDKs\tinyxml2;$(SolutionDir)\ScriptSystem;$(SolutionDir)\RenderEngine\</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\SDKs\flecs\lib\$(Platform)\$(Configuration)\;$(SolutionDir)..\..\SDKs\inih\lib\$(Platform)\$(Configuration)\;$(SolutionDir)..\..\SDKs\bgfx\lib\x64;$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies);RenderEngine.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;RenderBackend.lib;inih.lib;flecs.lib;ScriptSystem.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\SDKs\flecs\lib\$(Platform)\$(Configuration)\;$(SolutionDir)..\..\SDKs\tinyxml2;$(SolutionDir)..\..\SDKs\inih\lib\$(Platform)\$(Configuration)\;$(SolutionDir)..\..\SDKs\bgfx\lib\x64;$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);RenderEngine.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;RenderBackend.lib;inih.lib;flecs.lib;ScriptSystem.lib;tinyxml2.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -182,6 +182,7 @@
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="XmlEcsParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EntitySystem\ecsControl.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="XmlEcsParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
